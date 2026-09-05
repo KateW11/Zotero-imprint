@@ -252,11 +252,20 @@ export function asMarkdown(rep: ReconcileReport, folder: string): string {
     L.push("");
   };
 
-  block(`In the folder, no item in ${rep.scope}`, rep.folderOnly, (r) =>
-    r.name +
-    (r.doi ? " — " + r.doi : "") +
-    (r.elsewhere ? "  (in the library, but not here: " + r.elsewhere + ")" : ""),
+  const withDoi = (r: any) => r.name + (r.doi ? " — " + r.doi : "");
+  block(
+    "In the folder, not in the library at all",
+    rep.folderOnly.filter((r) => !r.elsewhere),
+    withDoi,
   );
+  const elsewhere = rep.folderOnly.filter((r) => r.elsewhere);
+  if (elsewhere.length) {
+    block(
+      `In the folder and in the library, but not in ${rep.scope}`,
+      elsewhere,
+      (r) => withDoi(r) + "  (" + r.elsewhere + ")",
+    );
+  }
   block(`In ${rep.scope}, no copy in the folder`, rep.libraryOnly, (r) =>
     `[${r.key}] ${r.title}` + (r.hasPdf ? "" : "  (no PDF in Zotero either)"),
   );

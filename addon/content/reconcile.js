@@ -126,9 +126,18 @@ var ReconcileWindow = {
       host.append(warn);
     }
 
-    this.section(host, `In the folder, no item in ${r.scope}`, r.folderOnly,
-      (x) => x.name + (x.doi ? "  —  " + x.doi : ""), null,
-      (x) => (x.elsewhere ? "in the library, but not here: " + x.elsewhere : ""));
+    // Scoped to a collection, "no item here" is mostly files that are simply
+    // filed elsewhere. Separating them keeps the papers the library has never
+    // seen from being buried under them.
+    const unknown = r.folderOnly.filter((x) => !x.elsewhere);
+    const elsewhere = r.folderOnly.filter((x) => x.elsewhere);
+    const withDoi = (x) => x.name + (x.doi ? "  —  " + x.doi : "");
+
+    this.section(host, "In the folder, not in the library at all", unknown, withDoi);
+    if (elsewhere.length) {
+      this.section(host, `In the folder and in the library, but not in ${r.scope}`,
+        elsewhere, withDoi, null, (x) => x.elsewhere);
+    }
 
     this.section(host, `In ${r.scope}, no copy in the folder`, r.libraryOnly,
       (x) => x.title, (x) => x.key,
