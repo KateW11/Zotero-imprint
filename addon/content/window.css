@@ -1,0 +1,105 @@
+/* Shared by the plugin's windows. All three are plain HTML documents, so no
+   namespace declarations are needed and every selector below is ordinary CSS.
+   They were XUL windows once: XUL box layout would not honour flex on the
+   scrolling table, and HTML form controls are not styled by the browser's own
+   stylesheet inside a XUL window. */
+
+/* An author display rule beats the browser's [hidden] rule, so .bar's
+   display:flex would keep a hidden row on screen. */
+[hidden] { display: none !important; }
+
+html, body {
+  color-scheme: light dark;
+  background: Canvas;
+  color: CanvasText;
+  font: menu;
+  margin: 0;
+  height: 100%;
+}
+
+.page { display: flex; flex-direction: column; height: 100vh; }
+.grow { flex: 1 1 auto; }
+
+.bar { display: flex; align-items: center; gap: 10px; padding: 12px 18px; }
+.bar.end { justify-content: flex-end; }
+.bar button { font: inherit; font-size: .95em; padding: 4px 12px; }
+.label { opacity: .7; }
+
+.path {
+  font-family: ui-monospace, Menlo, monospace; font-size: .9em; opacity: .75;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;
+}
+.summary { padding: 0 18px 10px; opacity: .8; }
+.error { color: #d0453b; padding: 6px 18px; }
+
+.scroll {
+  flex: 1 1 auto; min-height: 0; overflow: auto; margin: 0 18px 4px;
+  border: 1px solid color-mix(in srgb, CanvasText 22%, transparent);
+  border-radius: 4px;
+}
+
+table { border-collapse: collapse; width: 100%; table-layout: fixed; }
+th, td {
+  text-align: left; padding: 7px 14px; white-space: nowrap;
+  border-bottom: 1px solid color-mix(in srgb, CanvasText 10%, transparent);
+}
+th {
+  position: sticky; top: 0; z-index: 1; font-weight: 600;
+  background: color-mix(in srgb, CanvasText 8%, Canvas);
+}
+th.num, td.num { text-align: right; }
+td.file { overflow: hidden; text-overflow: ellipsis; }
+td.note { opacity: .65; white-space: normal; }
+tr:hover td { background: color-mix(in srgb, AccentColor 12%, transparent); }
+col.pick { width: 34px; }
+col.status { width: 130px; }
+col.count { width: 110px; }
+
+td.file input[type="text"] {
+  width: 100%; box-sizing: border-box; font: inherit; font-size: .95em;
+  background: transparent; color: inherit;
+  border: 1px solid color-mix(in srgb, CanvasText 18%, transparent);
+  border-radius: 3px; padding: 2px 5px;
+}
+
+/* Statuses */
+.st-current, .st-checks-out, .st-already-has-PDF { opacity: .5; }
+.st-cannot-verify { opacity: .7; }
+.st-out-of-date, .st-item-has-no-DOI, .st-needs-you { color: #c08a00; font-weight: 600; }
+.st-not-written, .st-new, .st-attach { color: AccentColor; font-weight: 600; }
+.st-disagrees-with-the-file { color: #d0453b; font-weight: 600; }
+
+/* Radio choices, because a select does not render usably in these windows. */
+.choice { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.choice input { margin: 0; }
+.bar.collections { padding-top: 0; align-items: flex-start; }
+.choices {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 3px 14px; max-height: 84px; overflow: auto; flex: 1 1 auto;
+}
+
+.log {
+  margin: 0 18px 12px; height: 140px; overflow: auto;
+  font-family: ui-monospace, Menlo, monospace; font-size: 11px;
+  white-space: pre-wrap;
+  border: 1px solid color-mix(in srgb, CanvasText 22%, transparent);
+  border-radius: 4px; padding: 6px;
+  background: color-mix(in srgb, CanvasText 4%, Canvas);
+}
+
+/* Reconcile sections */
+section { padding: 0 0 14px; }
+section h2 {
+  font-size: 1em; font-weight: 600; margin: 0; padding: 10px 14px 6px;
+  position: sticky; top: 0;
+  background: color-mix(in srgb, CanvasText 8%, Canvas);
+  border-bottom: 1px solid color-mix(in srgb, CanvasText 10%, transparent);
+}
+section ul { margin: 8px 0 0; padding: 0 14px 0 32px; }
+section li { padding: 3px 0; }
+section li.none { list-style: none; margin-left: -18px; opacity: .55; }
+.key {
+  font-family: ui-monospace, Menlo, monospace; font-size: .85em; opacity: .6;
+  margin-right: 8px;
+}
+.note { opacity: .6; }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Reconcile Folder and Library</title>
+    <link rel="stylesheet" href="window.css" />
+    <script src="reconcile.js"></script>
+  </head>
+  <body onload="ReconcileWindow.init()">
+    <div class="page">
+      <div class="bar">
+        <span class="label">Folder</span>
+        <span id="dir" class="path"></span>
+        <label class="choice">
+          <input type="checkbox" id="rescanAll" />Re-read every PDF</label>
+        <button id="run" onclick="ReconcileWindow.run()">Reconcile</button>
+      </div>
+
+      <div id="error" class="error" hidden="hidden"></div>
+      <div id="summary" class="summary"></div>
+
+      <div class="scroll">
+        <div id="sections"></div>
+      </div>
+
+      <div class="bar end">
+        <button id="copy" onclick="ReconcileWindow.copyMarkdown()">Copy as Markdown</button>
+        <button id="close" onclick="window.close()">Close</button>
+      </div>
+    </div>
+  </body>
+</html>

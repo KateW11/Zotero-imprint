@@ -1,0 +1,63 @@
+{
+  "name": "zotero-imprint",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Identifies a paper from the DOI printed inside its PDF, imports it, mirrors annotated copies back out, and reconciles a folder against the library.",
+  "config": {
+    "addonName": "Imprint",
+    "addonID": "imprint@katew11.github.io",
+    "addonRef": "imprint",
+    "addonInstance": "Imprint",
+    "prefsPrefix": "extensions.zotero.imprint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KateW11/zotero-imprint.git"
+  },
+  "author": "Kate Wickman",
+  "bugs": {
+    "url": "https://github.com/KateW11/zotero-imprint/issues"
+  },
+  "homepage": "https://github.com/KateW11/zotero-imprint#readme",
+  "license": "AGPL-3.0-or-later",
+  "scripts": {
+    "start": "zotero-plugin serve",
+    "build": "zotero-plugin build && tsc --noEmit",
+    "lint:check": "prettier --check . && eslint .",
+    "lint:fix": "prettier --write . && eslint . --fix",
+    "release": "zotero-plugin release",
+    "test": "zotero-plugin test",
+    "update-deps": "npm update --save"
+  },
+  "dependencies": {
+    "zotero-plugin-toolkit": "^5.2.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^5.2.3",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^24.10.0",
+    "@zotero-plugin/eslint-config": "^0.6.10",
+    "chai": "^6.2.1",
+    "eslint": "^9.39.2",
+    "mocha": "^11.7.5",
+    "prettier": "^3.7.4",
+    "typescript": "^5.9.3",
+    "zotero-plugin-scaffold": "^0.9.1",
+    "zotero-types": "^4.1.3"
+  },
+  "prettier": {
+    "printWidth": 80,
+    "tabWidth": 2,
+    "endOfLine": "lf",
+    "overrides": [
+      {
+        "files": [
+          "*.xhtml"
+        ],
+        "options": {
+          "htmlWhitespaceSensitivity": "css"
+        }
+      }
+    ]
+  }
+}

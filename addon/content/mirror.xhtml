@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Mirror Annotated PDFs</title>
+    <link rel="stylesheet" href="window.css" />
+    <script src="mirror.js"></script>
+  </head>
+  <body onload="MirrorWindow.init()" onunload="MirrorWindow.teardown()">
+    <div class="page">
+      <div class="bar">
+        <span class="label">Writing to</span>
+        <span id="dir" class="path"></span>
+        <button id="rescan" onclick="MirrorWindow.rescan()">Rescan</button>
+      </div>
+
+      <div id="error" class="error" hidden="hidden"></div>
+      <div id="summary" class="summary"></div>
+
+      <div class="scroll">
+        <table>
+          <colgroup>
+            <col class="status" />
+            <col />
+            <col class="count" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>File</th>
+              <th class="num">Annotations</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+
+      <div id="log" class="log" hidden="hidden"></div>
+
+      <div class="bar end">
+        <button id="dry" onclick="MirrorWindow.run({ dryRun: true, staleOnly: false })">Dry run</button>
+        <button id="stale" onclick="MirrorWindow.run({ dryRun: false, staleOnly: true })">Export out of date</button>
+        <button id="all" onclick="MirrorWindow.run({ dryRun: false, staleOnly: false })">Export all</button>
+        <button id="close" onclick="window.close()">Close</button>
+      </div>
+    </div>
+  </body>
+</html>

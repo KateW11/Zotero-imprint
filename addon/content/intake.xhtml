@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A plain XHTML document, not a XUL window. HTML form controls are only
+  styled properly by the browser's own stylesheet in an HTML document; in a
+  XUL window a <select> renders its options as loose text.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Intake</title>
+    <link rel="stylesheet" href="window.css" />
+    <script src="intake.js"></script>
+  </head>
+  <body onload="IntakeWindow.init()">
+    <div class="page">
+      <div class="bar">
+        <span class="label">Source</span>
+        <label class="choice">
+          <input
+            type="radio"
+            name="source"
+            value="zotero"
+            checked="checked"
+            onchange="IntakeWindow.sourceChanged()"
+          />PDFs already in Zotero</label>
+        <label class="choice">
+          <input
+            type="radio"
+            name="source"
+            value="collection"
+            onchange="IntakeWindow.sourceChanged()"
+          />PDFs in a collection</label>
+        <label class="choice">
+          <input
+            type="radio"
+            name="source"
+            value="folder"
+            onchange="IntakeWindow.sourceChanged()"
+          />PDFs in the source folder</label>
+        <span class="grow"></span>
+        <button id="scan" onclick="IntakeWindow.scan()">Scan</button>
+      </div>
+
+      <div class="bar collections" id="sourceCollectionBar" hidden="hidden">
+        <span class="label">Read from</span>
+        <div id="sourceCollections" class="choices"></div>
+      </div>
+
+      <div class="bar collections">
+        <span class="label">File into</span>
+        <div id="collections" class="choices"></div>
+      </div>
+
+      <div id="error" class="error" hidden="hidden"></div>
+      <div id="summary" class="summary"></div>
+
+      <div class="scroll">
+        <table>
+          <colgroup>
+            <col class="pick" />
+            <col class="status" />
+            <col />
+            <col />
+            <col />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>
+                <input
+                  type="checkbox"
+                  id="pickAll"
+                  onchange="IntakeWindow.toggleAll(this.checked)"
+                />
+              </th>
+              <th>Status</th>
+              <th>File</th>
+              <th>Resolves to</th>
+              <th>New name</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+
+      <div id="log" class="log" hidden="hidden"></div>
+
+      <div class="bar end">
+        <button id="dry" onclick="IntakeWindow.run(true)">Dry run</button>
+        <button id="apply" onclick="IntakeWindow.run(false)">Apply</button>
+        <button id="close" onclick="window.close()">Close</button>
+      </div>
+    </div>
+  </body>
+</html>
