@@ -15,6 +15,30 @@
         <button id="run" onclick="ReconcileWindow.run()">Reconcile</button>
       </div>
 
+      <div class="bar" style="padding-top: 0">
+        <span class="label">Compare against</span>
+        <label class="choice">
+          <input
+            type="radio"
+            name="scope"
+            value="library"
+            checked="checked"
+            onchange="ReconcileWindow.scopeChanged()"
+          />The whole library</label>
+        <label class="choice">
+          <input
+            type="radio"
+            name="scope"
+            value="collection"
+            onchange="ReconcileWindow.scopeChanged()"
+          />One collection</label>
+      </div>
+
+      <div class="bar collections" id="scopeCollectionBar" hidden="hidden">
+        <span class="label">Collection</span>
+        <div id="scopeCollections" class="choices"></div>
+      </div>
+
       <div id="error" class="error" hidden="hidden"></div>
       <div id="summary" class="summary"></div>
 

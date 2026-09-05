@@ -124,7 +124,7 @@ async function storedPdfAttachments(
  * Waves" usually holds no items of its own, and scanning it would otherwise
  * find nothing at all.
  */
-function itemsInCollection(collectionID: number): Set<number> {
+export function itemsInCollection(collectionID: number): Set<number> {
   const out = new Set<number>();
   const seen = new Set<number>();
 

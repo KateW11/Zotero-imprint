@@ -3,6 +3,7 @@ import { filenameParts, titleScore } from "../utils/matching";
 import { normText } from "../utils/similarity";
 import { normaliseDoi } from "./pdfText";
 import { folderIndex, IndexProgress } from "./folderIndex";
+import { itemsInCollection } from "./intake";
 
 /**
  * Compare a folder of PDFs against the library, both ways.
@@ -21,12 +22,15 @@ import { folderIndex, IndexProgress } from "./folderIndex";
 const TITLE_FLOOR = 0.86;
 
 interface LibraryItem {
+  id: number;
   key: string;
   title: string;
   doi: string;
   year: string;
   creators: string[];
   pdfs: number;
+  /** False when scoped to a collection and this item is outside it. */
+  inScope: boolean;
 }
 
 export interface ReconcileReport {
@@ -35,7 +39,9 @@ export interface ReconcileReport {
   matched: number;
   storageChecked: boolean;
   storage: string;
-  folderOnly: Array<{ name: string; doi: string }>;
+  /** What the folder was compared against. */
+  scope: string;
+  folderOnly: Array<{ name: string; doi: string; elsewhere: string }>;
   libraryOnly: Array<{
     key: string;
     title: string;
@@ -53,7 +59,11 @@ export interface ReconcileReport {
 
 export async function reconcile(
   folder: string,
-  options: { rescanAll?: boolean; onProgress?: IndexProgress } = {},
+  options: {
+    rescanAll?: boolean;
+    onProgress?: IndexProgress;
+    collectionID?: number | null;
+  } = {},
 ): Promise<ReconcileReport> {
   const libraryID = Zotero.Libraries.userLibraryID;
   const storage = PathUtils.join(Zotero.DataDirectory.dir, "storage");
@@ -71,9 +81,21 @@ export async function reconcile(
   const items = new Map<number, LibraryItem>();
   const broken: ReconcileReport["broken"] = [];
 
+  // The whole library is always indexed, even when the comparison is scoped
+  // to one collection: a file whose item sits elsewhere in the library is a
+  // different finding from one the library has never heard of.
+  const scopeIDs = options.collectionID
+    ? itemsInCollection(options.collectionID)
+    : null;
+  const collection = options.collectionID
+    ? Zotero.Collections.get(options.collectionID)
+    : null;
+
   for (const item of all) {
     if (item.deleted || !item.isRegularItem()) continue;
     items.set(item.id, {
+      id: item.id,
+      inScope: !scopeIDs || scopeIDs.has(item.id),
       key: item.key,
       title:
         (item.getField("title") as string) ||
@@ -91,6 +113,7 @@ export async function reconcile(
     const parent = items.get(item.parentItemID);
     if (!parent) continue;
     parent.pdfs += 1;
+    if (!parent.inScope) continue;
     if (!storageChecked) continue;
     if (await item.fileExists()) continue;
     broken.push({
@@ -117,6 +140,8 @@ export async function reconcile(
 
   const matchedFiles = new Set<string>();
   const matchedItems = new Set<string>();
+  /** Files matched to an item that exists, but outside the chosen collection. */
+  const outOfScope = new Map<string, string>();
 
   for (const f of files) {
     let hit: LibraryItem | null =
@@ -145,19 +170,26 @@ export async function reconcile(
       if (candidates.length === 1) hit = candidates[0];
     }
 
-    if (hit) {
+    if (hit && hit.inScope) {
       matchedFiles.add(f.name);
       matchedItems.add(hit.key);
+    } else if (hit) {
+      outOfScope.set(f.name, cleanField(hit.title).slice(0, 60));
     }
   }
 
   const folderOnly = files
     .filter((f) => !matchedFiles.has(f.name))
-    .map((f) => ({ name: f.name, doi: f.doi || "" }));
+    .map((f) => ({
+      name: f.name,
+      doi: f.doi || "",
+      elsewhere: outOfScope.get(f.name) || "",
+    }));
 
   const libraryOnly: ReconcileReport["libraryOnly"] = [];
   const noPdf: ReconcileReport["noPdf"] = [];
   for (const it of items.values()) {
+    if (!it.inScope) continue;
     const title = cleanField(it.title).slice(0, 90);
     if (!it.pdfs) noPdf.push({ key: it.key, title });
     if (!matchedItems.has(it.key)) {
@@ -174,9 +206,12 @@ export async function reconcile(
   const byTitle = (a: { title: string }, b: { title: string }) =>
     a.title.toLowerCase().localeCompare(b.title.toLowerCase());
 
+  const inScopeCount = [...items.values()].filter((i) => i.inScope).length;
+
   return {
     files: files.length,
-    items: items.size,
+    items: inScopeCount,
+    scope: collection ? collection.name : "the library",
     matched: matchedFiles.size,
     storageChecked,
     storage,
@@ -195,9 +230,9 @@ export function asMarkdown(rep: ReconcileReport, folder: string): string {
     "# Library reconciliation",
     "",
     "Folder: `" + folder + "`",
-    "Zotero: `" + Zotero.DataDirectory.dir + "`",
+    "Compared against: " + rep.scope,
     "",
-    `${rep.files} PDFs in the folder · ${rep.items} items in the library · ${rep.matched} matched`,
+    `${rep.files} PDFs in the folder · ${rep.items} items in ${rep.scope} · ${rep.matched} matched`,
     "",
   ];
 
@@ -217,10 +252,12 @@ export function asMarkdown(rep: ReconcileReport, folder: string): string {
     L.push("");
   };
 
-  block("In the folder, no item in the library", rep.folderOnly, (r) =>
-    r.name + (r.doi ? " — " + r.doi : ""),
+  block(`In the folder, no item in ${rep.scope}`, rep.folderOnly, (r) =>
+    r.name +
+    (r.doi ? " — " + r.doi : "") +
+    (r.elsewhere ? "  (in the library, but not here: " + r.elsewhere + ")" : ""),
   );
-  block("In the library, no copy in the folder", rep.libraryOnly, (r) =>
+  block(`In ${rep.scope}, no copy in the folder`, rep.libraryOnly, (r) =>
     `[${r.key}] ${r.title}` + (r.hasPdf ? "" : "  (no PDF in Zotero either)"),
   );
   block("Attachment rows whose file is missing on disk", rep.broken, (r) =>

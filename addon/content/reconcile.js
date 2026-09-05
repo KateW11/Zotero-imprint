@@ -20,6 +20,21 @@ var ReconcileWindow = {
     return addon.api;
   },
 
+  scope() {
+    const picked = document.querySelector('input[name="scope"]:checked');
+    return picked ? picked.value : "library";
+  },
+
+  scopeCollectionID() {
+    if (this.scope() !== "collection") return null;
+    const picked = document.querySelector('input[name="scopeCollection"]:checked');
+    return picked && picked.value ? Number(picked.value) : null;
+  },
+
+  scopeChanged() {
+    this.$("scopeCollectionBar").hidden = this.scope() !== "collection";
+  },
+
   $(id) {
     return document.getElementById(id);
   },
@@ -29,6 +44,27 @@ var ReconcileWindow = {
   },
 
   init() {
+    const host = this.$("scopeCollections");
+    const collections = this.api().intake.collections();
+    if (collections.length) {
+      collections.forEach((c, i) => {
+        const label = document.createElement("label");
+        label.className = "choice";
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "scopeCollection";
+        input.value = String(c.id);
+        if (i === 0) input.checked = true;
+        label.append(input, document.createTextNode(c.path));
+        host.append(label);
+      });
+    } else {
+      const empty = document.createElement("span");
+      empty.className = "note";
+      empty.textContent = "This library has no collections.";
+      host.append(empty);
+    }
+
     const dir = this.folder();
     this.$("dir").textContent = dir || "(no staging folder set in settings)";
     this.$("run").disabled = !dir;
@@ -59,6 +95,7 @@ var ReconcileWindow = {
     try {
       this.report = await this.api().reconcile.reconcile(this.folder(), {
         rescanAll: this.$("rescanAll").checked,
+        collectionID: this.scopeCollectionID(),
         onProgress: (done, total, name) => {
           this.$("summary").textContent =
             `Reading ${done} of ${total} — ${name.slice(0, 60)}`;
@@ -76,7 +113,7 @@ var ReconcileWindow = {
   render() {
     const r = this.report;
     this.$("summary").textContent =
-      `${r.files} PDFs in the folder · ${r.items} items in the library · ${r.matched} matched`;
+      `${r.files} PDFs in the folder · ${r.items} items in ${r.scope} · ${r.matched} matched`;
 
     const host = this.$("sections");
     host.textContent = "";
@@ -89,17 +126,18 @@ var ReconcileWindow = {
       host.append(warn);
     }
 
-    this.section(host, "In the folder, no item in the library", r.folderOnly,
-      (x) => x.name + (x.doi ? "  —  " + x.doi : ""));
+    this.section(host, `In the folder, no item in ${r.scope}`, r.folderOnly,
+      (x) => x.name + (x.doi ? "  —  " + x.doi : ""), null,
+      (x) => (x.elsewhere ? "in the library, but not here: " + x.elsewhere : ""));
 
-    this.section(host, "In the library, no copy in the folder", r.libraryOnly,
+    this.section(host, `In ${r.scope}, no copy in the folder`, r.libraryOnly,
       (x) => x.title, (x) => x.key,
       (x) => (x.hasPdf ? "" : "no PDF in Zotero either"));
 
     this.section(host, "Attachment rows whose file is missing on disk", r.broken,
       (x) => x.title, (x) => x.key, (x) => x.filename);
 
-    this.section(host, "Items with no PDF attached", r.noPdf,
+    this.section(host, `Items in ${r.scope} with no PDF attached`, r.noPdf,
       (x) => x.title, (x) => x.key);
   },
 
