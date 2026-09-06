@@ -1,7 +1,6 @@
 # Imprint
 
-**A Zotero plugin that identifies papers by the DOI printed inside the PDF —
-not by the filename, and not by what the publisher stamped on the file.**
+**A Zotero plugin that identifies papers by the DOI printed inside the PDF.**
 
 That one difference is what lets it import a folder of downloads accurately,
 tell you when a paper has been filed under the wrong item, and report the gaps
