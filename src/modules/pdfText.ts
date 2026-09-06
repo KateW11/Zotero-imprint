@@ -71,6 +71,31 @@ function pdfWorker(): any {
   return (Zotero as any).PDFWorker;
 }
 
+/**
+ * Whether the direct worker route answers at all.
+ *
+ * Checking that the methods exist is not enough: on a Zotero version that has
+ * changed the worker protocol they can still be there and simply never
+ * resolve, which hangs every file instead of failing one. Probed once, then
+ * remembered for the session.
+ */
+let directRouteWorks: boolean | null = null;
+
+/* Read through a function: the flag can flip during an await, which narrowing
+   cannot see. */
+function directRouteFailed(): boolean {
+  return directRouteWorks === false;
+}
+const PROBE_TIMEOUT_MS = 15000;
+
+function withTimeout<T>(work: Promise<T>, ms: number): Promise<T | symbol> {
+  const timedOut = Symbol("timeout");
+  return Promise.race([
+    work,
+    new Promise<symbol>((resolve) => setTimeout(() => resolve(timedOut), ms)),
+  ]).then((result) => (result === timedOut ? timedOut : (result as T)));
+}
+
 /** True when the worker's internals are where we expect them. */
 function canQueryWorkerDirectly(): boolean {
   const w = pdfWorker();
@@ -91,10 +116,21 @@ async function queryWorker(
 ): Promise<any> {
   const w = pdfWorker();
   const buf = freshBuffer(bytes);
-  return w._enqueue(
-    () => w._query(action, { buf, ...data }, [buf]),
-    false,
-  );
+  const call = w._enqueue(() => w._query(action, { buf, ...data }, [buf]), false);
+
+  // Only the first call is raced. Once the route is known to answer, a slow
+  // file is just a slow file and must not be cut off.
+  if (directRouteWorks === true) return call;
+
+  const result = await withTimeout(call, PROBE_TIMEOUT_MS);
+  if (typeof result === "symbol") {
+    directRouteWorks = false;
+    throw new Error(
+      "Zotero's PDF worker did not answer; falling back to the slower route",
+    );
+  }
+  directRouteWorks = true;
+  return result;
 }
 
 export interface PdfFacts {
@@ -117,7 +153,7 @@ export async function readPdfFacts(
   path: string,
   pages = 2,
 ): Promise<PdfFacts> {
-  if (!canQueryWorkerDirectly()) {
+  if (directRouteFailed() || !canQueryWorkerDirectly()) {
     return readViaTemporaryAttachment(path, pages);
   }
 
@@ -133,6 +169,7 @@ export async function readPdfFacts(
     if (fromMeta) return { doi: fromMeta, totalPages, source: "metadata" };
   } catch (e) {
     Zotero.debug(`Imprint: recognizer data failed for ${path}: ${e}`);
+    if (directRouteFailed()) return readViaTemporaryAttachment(path, pages);
   }
 
   try {
