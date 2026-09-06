@@ -125,17 +125,11 @@ PDFs, and a report of attachment rows whose file is missing from disk.
 4. Choose the downloaded `.xpi`
 5. Restart Zotero
 
-![Installing the plugin from a file](docs/InstallImprint.png)
-
 Everything lives under **Tools → Imprint**.
-
-![The Imprint submenu under Tools](docs/ImprintToolsMenu.png)
 
 ## Settings
 
 **Zotero → Settings → Imprint**
-
-![The Imprint settings pane](docs/ZoteroSettingsImprint.png)
 
 | | |
 |---|---|
