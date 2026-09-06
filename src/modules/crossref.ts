@@ -79,7 +79,9 @@ async function cached<T>(key: string, fetch: () => Promise<T>): Promise<T> {
     return store[key] as T;
   }
   const wait = DELAY_MS - (Date.now() - lastCall);
-  if (wait > 0) await Zotero.Promise.delay(wait);
+  // Plain setTimeout rather than Zotero.Promise.delay: Zotero.Promise is
+  // Bluebird, which Zotero has been removing.
+  if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait));
   const value = await fetch();
   lastCall = Date.now();
   store[key] = value;
