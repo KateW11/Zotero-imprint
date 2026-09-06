@@ -45,6 +45,8 @@ resolves. It only ever adds; it will not overwrite something you already
 entered. Check the whole library, or just one collection and its
 subcollections.
 
+![Intake reporting on every PDF already in the library](docs/IntakeScan.png)
+
 ### Export annotated PDFs in bulk
 
 *The problem: Zotero keeps your highlights in its database, not in the file.
