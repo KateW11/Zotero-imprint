@@ -313,6 +313,12 @@ function checkFiled(
     why = doi
       ? "the DOI inside the file is not one Crossref recognises"
       : "no DOI inside the file, so there is nothing independent to check the item against";
+  } else if (/\.supp$/i.test(normaliseDoi(record.DOI))) {
+    // APA and others mint a separate DOI for supplementary material, and the
+    // supplement's PDF carries it. The file is not a different paper from the
+    // item; it is that paper's appendix, so a disagreement would be wrong.
+    status = "cannot verify";
+    why = "this file is the item's supplementary material, which carries its own DOI";
   } else if (!parentDoi) {
     status = "item has no DOI";
     why = `the file's own DOI is ${record.DOI}`;

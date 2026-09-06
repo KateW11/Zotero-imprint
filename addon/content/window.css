@@ -52,7 +52,8 @@ td.file { overflow: hidden; text-overflow: ellipsis; }
 td.note { opacity: .65; white-space: normal; }
 tr:hover td { background: color-mix(in srgb, AccentColor 12%, transparent); }
 col.pick { width: 34px; }
-col.status { width: 130px; }
+col.status { width: 180px; }
+td.status { overflow: hidden; text-overflow: ellipsis; }
 col.count { width: 110px; }
 
 td.file input[type="text"] {

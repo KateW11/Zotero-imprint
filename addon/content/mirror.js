@@ -82,7 +82,7 @@ var MirrorWindow = {
     for (const r of this.records) {
       const tr = document.createElement("tr");
       tr.append(
-        this.cell(r.status, `st st-${r.status.replace(/\s+/g, "-")}`),
+        this.cell(r.status, `status st st-${r.status.replace(/\s+/g, "-")}`),
         this.cell(r.name, "file"),
         this.cell(String(r.annotations), "num"),
       );

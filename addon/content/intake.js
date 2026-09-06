@@ -160,7 +160,7 @@ var IntakeWindow = {
 
       tr.append(
         pick,
-        this.cell(row.status, "st st-" + row.status.replace(/\s+/g, "-")),
+        this.cell(row.status, "status st st-" + row.status.replace(/\s+/g, "-")),
         this.cell(row.filename, "file"),
         this.cell(
           row.record ? row.record.title : row.reason,
