@@ -1,7 +1,7 @@
 {
   "name": "zotero-imprint",
   "type": "module",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Identifies a paper from the DOI printed inside its PDF, imports it, mirrors annotated copies back out, and reconciles a folder against the library.",
   "config": {
     "addonName": "Imprint",

@@ -59,6 +59,17 @@ export function doiVariants(doi: string): string[] {
 }
 
 /** Bare DOI from whatever shape it is stored in. */
+/**
+ * A DOI for a paper's supplementary material rather than the paper.
+ *
+ * APA and others mint a separate DOI for the supplement, and the supplement's
+ * PDF carries it. Treating one as the article's DOI reports a correctly filed
+ * appendix as the wrong paper.
+ */
+export function isSupplementDoi(doi: string): boolean {
+  return /\.supp$/i.test(normaliseDoi(doi));
+}
+
 export function normaliseDoi(value: unknown): string {
   return String(value ?? "")
     .trim()
@@ -223,7 +234,7 @@ export async function readPdfFacts(
  * pypdfium2 never surfaced these, so the Python tool never had to guard
  * against them. Zotero's PDF engine does surface them.
  */
-function isJournalLevelDoi(doi: string): boolean {
+export function isJournalLevelDoi(doi: string): boolean {
   return /\(issn\)/i.test(doi);
 }
 

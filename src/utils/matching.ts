@@ -12,7 +12,13 @@ export function filenameParts(name: string): {
   stem = stem.replace(/\s*\((?:duplicate|\d+)\)$/i, "");
   const m = FILENAME_SHAPE.exec(stem);
   if (!m?.groups) return { first: "", year: "", title: stem };
-  const first = m.groups.auth.split(/ (?:et al\.?|and) /)[0];
+  // "Scheffer et al." has no space after "et al.", so splitting on it alone
+  // returned the whole string -- and surnameOf() then yielded "et al.",
+  // which matches no author. The author-and-year fallback was dead for
+  // every multi-author paper.
+  const first = m.groups.auth
+    .replace(/\s+et al\.?$/i, "")
+    .split(/ (?:et al\.?|and) /)[0];
   return {
     first: first.trim(),
     year: m.groups.yr,

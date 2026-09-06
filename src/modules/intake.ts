@@ -2,7 +2,7 @@ import { cleanField } from "../utils/naming";
 import { normText } from "../utils/similarity";
 import { readPdfFacts } from "./pdfText";
 import { accept, byDoi, CrossrefRecord, flushCache, recordFrom, search, } from "./crossref";
-import { normaliseDoi } from "./pdfText";
+import { isSupplementDoi, normaliseDoi } from "./pdfText";
 
 /**
  * Intake for PDFs that are already in Zotero as standalone attachments --
@@ -313,7 +313,7 @@ function checkFiled(
     why = doi
       ? "the DOI inside the file is not one Crossref recognises"
       : "no DOI inside the file, so there is nothing independent to check the item against";
-  } else if (/\.supp$/i.test(normaliseDoi(record.DOI))) {
+  } else if (isSupplementDoi(record.DOI)) {
     // APA and others mint a separate DOI for supplementary material, and the
     // supplement's PDF carries it. The file is not a different paper from the
     // item; it is that paper's appendix, so a disagreement would be wrong.
