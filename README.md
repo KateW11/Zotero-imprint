@@ -30,8 +30,6 @@ folder.
 Anything it can't identify confidently is left alone and listed, with the
 reason. It never guesses.
 
-![Intake reading from the source folder](docs/IntakeSourceFolder.png)
-
 ### Check what Zotero has already filed
 
 *The problem: a paper filed under the wrong item looks completely normal in
@@ -44,13 +42,8 @@ with them.
 
 It fills in blanks too — an item with no DOI, where the file has one that
 resolves. It only ever adds; it will not overwrite something you already
-entered.
-
-![Intake checking every PDF already in the library](docs/IntakeSourceWholeLibrary.png)
-
-Check the whole library, or just one collection and its subcollections:
-
-![Intake reading from a single collection](docs/IntakeSourceCollection.png)
+entered. Check the whole library, or just one collection and its
+subcollections.
 
 ### Export annotated PDFs in bulk
 
