@@ -3,7 +3,7 @@
 **A Zotero plugin that identifies papers by the DOI printed inside the PDF.**
 
 - Import a folder of downloads accurately,
-- Identify when a paper has been filed under the wrong item, and 
+- Identify when a paper has been filed under the wrong item, and
 - Report the gaps between what's filed on your computer and what your library thinks it has.
 
 For Zotero 9 and 10.
@@ -21,14 +21,14 @@ For Zotero 9 and 10.
 `1-s2.0-S0010027718300398-main.pdf`.*
 
 Imprint reads the DOI out of each file, looks it up,
-and reports a table of findings. You tick the rows you want, pick a collection, and Imprint will: 
+and reports a table of findings. You tick the rows you want, pick a collection, and Imprint will:
 
-- creates the items,
-- attaches the files,
+- create the items,
+- attach the files,
 - renames them to Zotero's convention
 - moves the originals into your archive folder.
 
-Unidentifiable items are listed, with the reason. 
+Unidentifiable items are listed, with the reason.
 
 ### Check what Zotero has already filed
 
@@ -37,16 +37,16 @@ Zotero.*
 
 Imprint compares every stored PDF against the DOI printed inside it and tells
 you which ones agree, which ones disagree, and which ones carry no DOI it can
-check. 
+check.
 
-** Nothing else will find these, because there is nothing visibly wrong
-with them. **. 
+**Nothing else will find these, because there is nothing visibly wrong with
+them.**
 
-Imprint can: 
+Imprint can:
 
-- fill in the blanks. 
-- only ever adds and will not overwrite something you already entered.
-- Check the whole library, or just one collection and its subcollections. 
+- fill in the blanks,
+- only ever add, never overwriting something you already entered,
+- check the whole library, or just one collection and its subcollections.
 
 ![Intake reporting on every PDF already in the library](docs/IntakeScan.png)
 
@@ -56,7 +56,7 @@ Imprint can:
 Back up your storage folder and you have backed up the papers and none of the
 reading.*
 
-Imprint 
+Imprint
 - **writes copies** with the **annotations embedded** as standard PDF annotations (open in Preview, Acrobat, a tablet etc).
 - Tracks which copies are out of date against the newest annotation on each paper (export changes only)
 - Exports in Bulk
@@ -75,8 +75,8 @@ Imprint
 | **Items with no PDF attached** | nothing to read on any device |
 
 - Compare against the whole library or a single collection.
-- Scoped to a collection, files that *are* in your library but filed elsewhere are listed separately, so the
-- papers Zotero has genuinely never seen are listed separately
+- Scoped to a collection, files that *are* in your library but filed elsewhere
+  are listed apart from the papers Zotero has genuinely never seen.
 
 ---
 
