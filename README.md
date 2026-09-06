@@ -10,6 +10,8 @@ between what's on your disk and what your library thinks it has.
 For Zotero 9 and 10.
 [Download the latest release](https://github.com/KateW11/zotero-imprint/releases).
 
+![Reconciling a folder of PDFs against one collection](docs/ReconcileCollection.png)
+
 ---
 
 ## What it does
@@ -28,6 +30,8 @@ folder.
 Anything it can't identify confidently is left alone and listed, with the
 reason. It never guesses.
 
+![Intake reading from the source folder](docs/IntakeSourceFolder.png)
+
 ### Check what Zotero has already filed
 
 *The problem: a paper filed under the wrong item looks completely normal in
@@ -41,6 +45,12 @@ with them.
 It fills in blanks too — an item with no DOI, where the file has one that
 resolves. It only ever adds; it will not overwrite something you already
 entered.
+
+![Intake checking every PDF already in the library](docs/IntakeSourceWholeLibrary.png)
+
+Check the whole library, or just one collection and its subcollections:
+
+![Intake reading from a single collection](docs/IntakeSourceCollection.png)
 
 ### Export annotated PDFs in bulk
 
@@ -58,19 +68,26 @@ scripts on the forums copy the stored file, which silently gives you
 unannotated PDFs. Your annotations stay in Zotero: the `transfer` argument that
 would move them out is never passed.
 
+![Mirroring annotated PDFs out of the library](docs/MirrorAnnotations.png)
+
 ### Reconcile your folder against your library
 
 *The problem: four questions that nothing answers together.*
 
 | | |
 |---|---|
-| **In the folder, no item in the library** | a paper you hold that Zotero has never been told about |
+| **In the folder, not in the library at all** | a paper you hold that Zotero has never been told about |
 | **In the library, no copy in the folder** | an item with no local backup outside Zotero |
 | **Attachment rows whose file is missing on disk** | it looks present in Zotero, opens to nothing, and will never appear on a phone. Zotero has no report of these |
 | **Items with no PDF attached** | nothing to read on any device |
 
 Matching is by the DOI inside each file first, then by title, so a file whose
 name says one thing and whose contents say another is matched on its contents.
+
+Compare against the whole library or a single collection. Scoped to a
+collection, files that *are* in your library but filed elsewhere are listed
+separately, so the papers Zotero has genuinely never seen don't get buried
+under them — that's the screenshot at the top of this page.
 
 ---
 
@@ -108,11 +125,17 @@ PDFs, and a report of attachment rows whose file is missing from disk.
 4. Choose the downloaded `.xpi`
 5. Restart Zotero
 
+![Installing the plugin from a file](docs/InstallImprint.png)
+
 Everything lives under **Tools → Imprint**.
+
+![The Imprint submenu under Tools](docs/ImprintToolsMenu.png)
 
 ## Settings
 
 **Zotero → Settings → Imprint**
+
+![The Imprint settings pane](docs/ZoteroSettingsImprint.png)
 
 | | |
 |---|---|
