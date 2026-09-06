@@ -2,9 +2,9 @@
 
 **A Zotero plugin that identifies papers by the DOI printed inside the PDF.**
 
-That one difference is what lets it import a folder of downloads accurately,
-tell you when a paper has been filed under the wrong item, and report the gaps
-between what's on your disk and what your library thinks it has.
+- Import a folder of downloads accurately,
+- Identify when a paper has been filed under the wrong item, and 
+- Report the gaps between what's filed on your computer and what your library thinks it has.
 
 For Zotero 9 and 10.
 [Download the latest release](https://github.com/KateW11/zotero-imprint/releases).
@@ -20,14 +20,15 @@ For Zotero 9 and 10.
 *The problem: a folder of PDFs named `fpsyg-09-00282.pdf` and
 `1-s2.0-S0010027718300398-main.pdf`.*
 
-Point Imprint at the folder. It reads the DOI out of each file, looks it up,
-and shows you a table of what it found before it touches anything. You tick the
-rows you want, pick a collection, and it creates the items, attaches the files,
-renames them to Zotero's convention and moves the originals into your archive
-folder.
+Imprint reads the DOI out of each file, looks it up,
+and reports a table of findings. You tick the rows you want, pick a collection, and Imprint will: 
 
-Anything it can't identify confidently is left alone and listed, with the
-reason. It never guesses.
+- creates the items,
+- attaches the files,
+- renames them to Zotero's convention
+- moves the originals into your archive folder.
+
+Unidentifiable items are listed, with the reason. 
 
 ### Check what Zotero has already filed
 
@@ -36,13 +37,16 @@ Zotero.*
 
 Imprint compares every stored PDF against the DOI printed inside it and tells
 you which ones agree, which ones disagree, and which ones carry no DOI it can
-check. Nothing else will find these, because there is nothing visibly wrong
-with them.
+check. 
 
-It fills in blanks too — an item with no DOI, where the file has one that
-resolves. It only ever adds; it will not overwrite something you already
-entered. Check the whole library, or just one collection and its
-subcollections.
+** Nothing else will find these, because there is nothing visibly wrong
+with them. **. 
+
+Imprint can: 
+
+- fill in the blanks. 
+- only ever adds and will not overwrite something you already entered.
+- Check the whole library, or just one collection and its subcollections. 
 
 ![Intake reporting on every PDF already in the library](docs/IntakeScan.png)
 
@@ -52,15 +56,10 @@ subcollections.
 Back up your storage folder and you have backed up the papers and none of the
 reading.*
 
-Imprint writes copies with the annotations embedded as standard PDF
-annotations — readable in Preview, Acrobat, on a tablet, anywhere. It tracks
-which copies are out of date against the newest annotation on each paper, so
-you can export just those.
-
-Zotero's own File → Export PDF does one document at a time, and the batch
-scripts on the forums copy the stored file, which silently gives you
-unannotated PDFs. Your annotations stay in Zotero: the `transfer` argument that
-would move them out is never passed.
+Imprint 
+- **writes copies** with the **annotations embedded** as standard PDF annotations (open in Preview, Acrobat, a tablet etc).
+- Tracks which copies are out of date against the newest annotation on each paper (export changes only)
+- Exports in Bulk
 
 ![Mirroring annotated PDFs out of the library](docs/MirrorAnnotations.png)
 
@@ -75,13 +74,9 @@ would move them out is never passed.
 | **Attachment rows whose file is missing on disk** | it looks present in Zotero, opens to nothing, and will never appear on a phone. Zotero has no report of these |
 | **Items with no PDF attached** | nothing to read on any device |
 
-Matching is by the DOI inside each file first, then by title, so a file whose
-name says one thing and whose contents say another is matched on its contents.
-
-Compare against the whole library or a single collection. Scoped to a
-collection, files that *are* in your library but filed elsewhere are listed
-separately, so the papers Zotero has genuinely never seen don't get buried
-under them — that's the screenshot at the top of this page.
+- Compare against the whole library or a single collection.
+- Scoped to a collection, files that *are* in your library but filed elsewhere are listed separately, so the
+- papers Zotero has genuinely never seen are listed separately
 
 ---
 
