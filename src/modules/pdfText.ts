@@ -104,6 +104,31 @@ function canQueryWorkerDirectly(): boolean {
   );
 }
 
+/**
+ * The action name Zotero's own method sends to the worker.
+ *
+ * Zotero 9 sends "getFulltext"; Zotero 10 namespaced them all to
+ * "pdf.getFulltext". An unrecognised action is not rejected by the worker --
+ * it is simply never answered -- so guessing costs a hang rather than an
+ * error. Reading the name out of Zotero's own source is correct on any
+ * version, including ones that do not exist yet.
+ */
+const actionNames = new Map<string, string>();
+
+function actionFor(method: string, fallback: string): string {
+  const cached = actionNames.get(method);
+  if (cached) return cached;
+  let name = fallback;
+  try {
+    const found = /_query\(\s*['"]([\w.]+)['"]/.exec(String(pdfWorker()?.[method]));
+    if (found) name = found[1];
+  } catch {
+    // keep the fallback
+  }
+  actionNames.set(method, name);
+  return name;
+}
+
 /** A fresh ArrayBuffer each time: the worker call transfers and detaches it. */
 function freshBuffer(bytes: Uint8Array): ArrayBuffer {
   return new Uint8Array(bytes).buffer;
@@ -111,7 +136,7 @@ function freshBuffer(bytes: Uint8Array): ArrayBuffer {
 
 async function queryWorker(
   bytes: Uint8Array,
-  action: "getFulltext" | "getRecognizerData",
+  action: string,
   data: Record<string, unknown>,
 ): Promise<any> {
   const w = pdfWorker();
@@ -161,9 +186,11 @@ export async function readPdfFacts(
   let totalPages = 0;
 
   try {
-    const rec = await queryWorker(bytes, "getRecognizerData", {
-      password: undefined,
-    });
+    const rec = await queryWorker(
+      bytes,
+      actionFor("getRecognizerData", "getRecognizerData"),
+      { password: undefined },
+    );
     totalPages = rec?.totalPages || 0;
     const fromMeta = firstDoiIn(Object.values(rec?.metadata || {}).join("\n"));
     if (fromMeta) return { doi: fromMeta, totalPages, source: "metadata" };
@@ -173,7 +200,7 @@ export async function readPdfFacts(
   }
 
   try {
-    const full = await queryWorker(bytes, "getFulltext", {
+    const full = await queryWorker(bytes, actionFor("getFullText", "getFulltext"), {
       maxPages: pages,
       password: undefined,
     });
