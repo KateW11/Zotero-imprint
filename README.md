@@ -111,6 +111,15 @@ PDFs, and a report of attachment rows whose file is missing from disk.
 
 ---
 
+## Guides
+
+- [Your first import](docs/first-import.md) — install, settings, and a folder
+  of downloads into Zotero, start to finish
+- [Auditing a library you already have](docs/auditing-a-library.md) — finding
+  papers filed under the wrong item
+- [When it can't identify something](docs/when-it-cannot-identify.md) — what
+  "needs you" and "cannot verify" mean, and what to do about each
+
 ## Install
 
 1. Download `imprint.xpi` from the
