@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A plain XHTML document, not a XUL window. HTML form controls are only
+  styled properly by the browser's own stylesheet in an HTML document; in a
+  XUL window a <select> renders its options as loose text.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Intake</title>
+    <link rel="stylesheet" href="window.css" />
+    <script src="picker.js"></script>
+    <script src="intake.js"></script>
+  </head>
+  <body onload="IntakeWindow.init()">
+    <div class="page">
+      <div class="bar">
+        <span class="label">Source</span>
+        <label class="choice">
+          <input
+            type="radio"
+            name="source"
+            value="zotero"
+            checked="checked"
+            onchange="IntakeWindow.sourceChanged()"
+          />PDFs already in Zotero</label
+        >
+        <label class="choice">
+          <input
+            type="radio"
+            name="source"
+            value="collection"
+            onchange="IntakeWindow.sourceChanged()"
+          />PDFs in a collection</label
+        >
+        <label class="choice">
+          <input
+            type="radio"
+            name="source"
+            value="folder"
+            onchange="IntakeWindow.sourceChanged()"
+          />PDFs in a folder</label
+        >
+        <span class="grow"></span>
+        <button id="scan" onclick="IntakeWindow.scan()">Scan</button>
+      </div>
+      <p class="hint" id="sourceHint"></p>
+
+      <div class="bar tight" id="sourceCollectionBar" hidden="hidden">
+        <span class="label">Read from</span>
+        <span id="sourceCollection" class="pickerHost"></span>
+      </div>
+
+      <div class="bar tight" id="sourceFolderBar" hidden="hidden">
+        <span class="label">Read from</span>
+        <span id="sourceFolder" class="path"></span>
+        <button id="chooseSource" onclick="IntakeWindow.chooseFolder()">
+          Choose…
+        </button>
+        <button
+          id="useSettingsSource"
+          onclick="IntakeWindow.useSettingsFolder()"
+          title="Go back to the folder set in Imprint settings"
+        >
+          Use settings folder
+        </button>
+      </div>
+
+      <div class="bar tight">
+        <span class="label">File into</span>
+        <span id="collections" class="pickerHost"></span>
+      </div>
+      <p class="hint">
+        Items created or matched in this run are added to that collection. Leave
+        it on "no collection" to file them nowhere in particular.
+      </p>
+
+      <div id="error" class="error" hidden="hidden"></div>
+      <div id="summary" class="summary"></div>
+      <div id="legend" class="legend"></div>
+
+      <div class="scroll">
+        <table>
+          <colgroup>
+            <col class="pick" />
+            <col class="status" />
+            <col />
+            <col />
+            <col id="nameCol" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>
+                <input
+                  type="checkbox"
+                  id="pickAll"
+                  onchange="IntakeWindow.toggleAll(this.checked)"
+                />
+              </th>
+              <th>Status</th>
+              <th>File</th>
+              <th>Resolves to</th>
+              <th id="nameHead">New name</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+
+      <div id="log" class="log" hidden="hidden"></div>
+
+      <div class="bar end">
+        <button id="dry" onclick="IntakeWindow.run(true)">Dry run</button>
+        <button id="apply" onclick="IntakeWindow.run(false)">Apply</button>
+        <button id="stop" onclick="IntakeWindow.stop()" disabled="disabled">
+          Stop
+        </button>
+        <button id="close" onclick="window.close()">Close</button>
+      </div>
+    </div>
+  </body>
+</html>

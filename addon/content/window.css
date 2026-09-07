@@ -1,0 +1,379 @@
+/* Shared by the plugin's windows. All three are plain HTML documents, so no
+   namespace declarations are needed and every selector below is ordinary CSS.
+   They were XUL windows once: XUL box layout would not honour flex on the
+   scrolling table, and HTML form controls are not styled by the browser's own
+   stylesheet inside a XUL window. */
+
+/* An author display rule beats the browser's [hidden] rule, so .bar's
+   display:flex would keep a hidden row on screen. */
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  /* One number for how far everything sits from the window edge. It was
+     written out separately in seven rules and drifted apart; this is the fix.
+     Anything that spans the window width uses it -- bars, notes, the table,
+     the log -- so nothing ever sits closer to the edge than anything else. */
+  --edge: 34px;
+
+  color-scheme: light dark;
+  background: Canvas;
+  color: CanvasText;
+  font: menu;
+  margin: 0;
+  height: 100%;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding-top: 4px;
+  box-sizing: border-box;
+}
+.grow {
+  flex: 1 1 auto;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  /* Narrow the window and a row of controls has to go somewhere. Without
+     this it runs off the right edge and takes the Scan button with it, so
+     the control the row exists for is the first thing to disappear. */
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px var(--edge);
+}
+.bar.end {
+  justify-content: flex-end;
+}
+.bar button {
+  font: inherit;
+  font-size: 0.95em;
+  padding: 4px 12px;
+}
+.label {
+  opacity: 0.7;
+}
+
+.path {
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 0.9em;
+  opacity: 0.75;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+.summary {
+  padding: 0 var(--edge) 12px;
+  opacity: 0.8;
+}
+.error {
+  color: #d0453b;
+  padding: 6px var(--edge);
+}
+
+.scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  margin: 0 var(--edge) 4px;
+  border: 1px solid color-mix(in srgb, CanvasText 22%, transparent);
+  border-radius: 4px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+}
+th,
+td {
+  text-align: left;
+  padding: 7px 14px;
+  white-space: nowrap;
+  border-bottom: 1px solid color-mix(in srgb, CanvasText 10%, transparent);
+}
+th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  font-weight: 600;
+  background: color-mix(in srgb, CanvasText 8%, Canvas);
+}
+th.num,
+td.num {
+  text-align: right;
+}
+td.file {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+td.note {
+  opacity: 0.65;
+  white-space: normal;
+}
+tr:hover td {
+  background: color-mix(in srgb, AccentColor 12%, transparent);
+}
+col.pick {
+  width: 34px;
+}
+/* Wide enough for "disagrees with the file", the longest status there is. */
+col.status {
+  width: 208px;
+}
+td.status {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+col.count {
+  width: 110px;
+}
+/* Hiding a column's cells is not enough: in a fixed layout the <col> still
+   claims its share, and the table ends up squeezed into the left of the box
+   with dead space beside it. Zero width is what actually gives it back. */
+col.collapsed {
+  width: 0;
+}
+
+td.file input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  font-size: 0.95em;
+  background: transparent;
+  color: inherit;
+  border: 1px solid color-mix(in srgb, CanvasText 18%, transparent);
+  border-radius: 3px;
+  padding: 2px 5px;
+}
+
+/* Statuses */
+.st-current,
+.st-checks-out,
+.st-already-has-PDF {
+  opacity: 0.5;
+}
+.st-cannot-verify {
+  opacity: 0.7;
+}
+.st-out-of-date,
+.st-item-has-no-DOI,
+.st-supplement,
+.st-duplicate,
+.st-needs-you {
+  color: #c08a00;
+  font-weight: 600;
+}
+.st-not-written,
+.st-new,
+.st-attach {
+  color: AccentColor;
+  font-weight: 600;
+}
+.st-disagrees-with-the-file {
+  color: #d0453b;
+  font-weight: 600;
+}
+
+.choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+.choice input {
+  margin: 0;
+}
+.gap {
+  width: 12px;
+}
+
+/* Control groups after the first sit tighter than the bar above them. */
+.bar.tight {
+  padding-top: 0;
+}
+
+/* Dropdowns. Drawn as ordinary elements because a chrome window has no
+   working popup layer for a <select>: its options paint as loose overlapping
+   text over whatever is behind them. See picker.js. */
+.pickerHost {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 1 420px;
+  min-width: 0;
+}
+.pickerHost.narrow {
+  flex: 0 0 190px;
+}
+
+.combo {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  /* Above the table's sticky header, which sits at 1. */
+  z-index: 5;
+}
+
+.comboButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  font: inherit;
+  font-size: 0.95em;
+  text-align: left;
+  padding: 3px 8px;
+  background: Field;
+  color: FieldText;
+  border: 1px solid color-mix(in srgb, CanvasText 30%, transparent);
+  border-radius: 4px;
+}
+.comboText {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.comboCaret {
+  flex: none;
+  opacity: 0.55;
+  font-size: 0.9em;
+}
+
+.comboPanel {
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 0;
+  min-width: 100%;
+  max-width: 560px;
+  z-index: 50;
+  padding: 6px;
+  background: Canvas;
+  color: CanvasText;
+  border: 1px solid color-mix(in srgb, CanvasText 30%, transparent);
+  border-radius: 5px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 30%);
+}
+.comboPanel .filter {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 6px;
+}
+.comboList {
+  max-height: 260px;
+  overflow: auto;
+}
+.comboItem {
+  padding: 4px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.comboItem.chosen {
+  font-weight: 600;
+}
+.comboItem.active {
+  background: AccentColor;
+  color: AccentColorText;
+}
+.comboEmpty {
+  padding: 4px 8px;
+  opacity: 0.6;
+}
+
+input.filter {
+  font: inherit;
+  font-size: 0.95em;
+  padding: 2px 6px;
+  background: Field;
+  color: FieldText;
+  border: 1px solid color-mix(in srgb, CanvasText 25%, transparent);
+  border-radius: 3px;
+}
+
+/* Guidance. Every control group gets a line saying what the choice means. */
+.hint {
+  margin: 0;
+  padding: 0 var(--edge) 12px;
+  max-width: 100ch;
+  opacity: 0.62;
+  font-size: 0.9em;
+  line-height: 1.45;
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  padding: 0 var(--edge) 12px;
+  font-size: 0.88em;
+  opacity: 0.8;
+}
+.legend:empty {
+  display: none;
+}
+.legend b {
+  font-weight: 600;
+  margin-right: 4px;
+}
+.legend .st {
+  opacity: 1;
+}
+
+.log {
+  margin: 0 var(--edge) 12px;
+  height: 140px;
+  overflow: auto;
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 11px;
+  white-space: pre-wrap;
+  border: 1px solid color-mix(in srgb, CanvasText 22%, transparent);
+  border-radius: 4px;
+  padding: 6px;
+  background: color-mix(in srgb, CanvasText 4%, Canvas);
+}
+
+/* Reconcile sections */
+section {
+  padding: 0 0 14px;
+}
+section h2 {
+  font-size: 1em;
+  font-weight: 600;
+  margin: 0;
+  padding: 10px 14px 6px;
+  position: sticky;
+  top: 0;
+  background: color-mix(in srgb, CanvasText 8%, Canvas);
+  border-bottom: 1px solid color-mix(in srgb, CanvasText 10%, transparent);
+}
+section ul {
+  margin: 8px 0 0;
+  padding: 0 14px 0 32px;
+}
+section li {
+  padding: 3px 0;
+}
+section li.none {
+  list-style: none;
+  margin-left: -18px;
+  opacity: 0.55;
+}
+.key {
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 0.85em;
+  opacity: 0.6;
+  margin-right: 8px;
+}
+.note {
+  opacity: 0.6;
+}

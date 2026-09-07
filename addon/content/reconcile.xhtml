@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Reconcile Folder and Library</title>
+    <link rel="stylesheet" href="window.css" />
+    <script src="picker.js"></script>
+    <script src="reconcile.js"></script>
+  </head>
+  <body onload="ReconcileWindow.init()">
+    <div class="page">
+      <div class="bar">
+        <span class="label">Folder</span>
+        <span id="dir" class="path"></span>
+        <button id="choose" onclick="ReconcileWindow.chooseFolder()">
+          Choose…
+        </button>
+        <button
+          id="useStaging"
+          onclick="ReconcileWindow.useStagingFolder()"
+          title="Go back to the staging folder set in Imprint settings"
+        >
+          Use settings folder
+        </button>
+        <label class="choice">
+          <input type="checkbox" id="rescanAll" />Re-read every PDF</label
+        >
+        <button id="run" onclick="ReconcileWindow.run()">Reconcile</button>
+      </div>
+      <p class="hint">
+        Compares the PDFs in that folder against your library, both ways.
+        Nothing is changed — this only reports. "Re-read every PDF" ignores the
+        cache and opens each file again, which is slower but catches a file that
+        has been replaced since the last run.
+      </p>
+
+      <div class="bar tight">
+        <span class="label">Compare against</span>
+        <label class="choice">
+          <input
+            type="radio"
+            name="scope"
+            value="library"
+            checked="checked"
+            onchange="ReconcileWindow.scopeChanged()"
+          />The whole library</label
+        >
+        <label class="choice">
+          <input
+            type="radio"
+            name="scope"
+            value="collection"
+            onchange="ReconcileWindow.scopeChanged()"
+          />One collection</label
+        >
+        <span id="scopeCollection" class="pickerHost" hidden="hidden"></span>
+      </div>
+      <p class="hint">
+        Scoped to a collection, files that are in your library but filed
+        elsewhere are listed separately from papers the library has never seen.
+      </p>
+
+      <div id="error" class="error" hidden="hidden"></div>
+      <div id="summary" class="summary"></div>
+
+      <div class="scroll">
+        <div id="sections"></div>
+      </div>
+
+      <div class="bar end">
+        <button
+          id="toIntake"
+          onclick="ReconcileWindow.sendToIntake()"
+          title="Open Intake on this folder, limited to the files no item was found for"
+        >
+          Send unmatched to Intake
+        </button>
+        <button id="copy" onclick="ReconcileWindow.copyMarkdown()">
+          Copy as Markdown
+        </button>
+        <button id="stop" onclick="ReconcileWindow.stop()" disabled="disabled">
+          Stop
+        </button>
+        <button id="close" onclick="window.close()">Close</button>
+      </div>
+    </div>
+  </body>
+</html>

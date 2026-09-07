@@ -1,0 +1,11 @@
+pref-title = Imprint
+pref-folders-title = Folders
+pref-source-dir = New PDFs are dropped in
+pref-staging-dir = Renamed PDFs are filed to
+pref-annotations-dir = Exported annotations go to
+pref-annotations-hint = Leave blank to use an "Annotated" subfolder of the staging folder.
+pref-crossref-title = Crossref
+pref-crossref-email = Email for Crossref
+pref-crossref-hint = Optional. Crossref gives faster service to requests that identify themselves.
+pref-browse = Choose...
+pref-help = { $name } build { $version }, { $time }

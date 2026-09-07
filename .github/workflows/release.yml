@@ -1,0 +1,43 @@
+name: Release
+
+# Pushing a version tag builds the plugin and publishes it. The update
+# manifest goes to a permanently named "release" tag, because Zotero checks a
+# fixed URL for updates and that URL cannot move between versions.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Publish the version release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: .scaffold/build/*.xpi
+          generate_release_notes: true
+
+      - name: Update the update manifest
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: release
+          name: Update manifest
+          body: >
+            Zotero reads update.json from this release to find new versions.
+            Not a release to install from; use the tagged releases instead.
+          files: |
+            .scaffold/build/update.json
+            .scaffold/build/update-beta.json
